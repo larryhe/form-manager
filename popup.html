@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/popup.js"></script>
+    <style type="text/css">
+        body { color: #000; font: 12px/20px Helvetica,arial,sans-serif; padding: 10px; margin: 0; text-align: center; }
+        table#formList { margin-bottom: 0;margin-top: 10px;margin-right: 60px;min-width: 300px; }
+        table#formList tbody tr { cursor: pointer; }
+        table#formList thead tr { cursor: default; }
+        table#formList td, table#formList th { text-align: center;vertical-align: middle; -webkit-user-select: none; }
+        table#formList tbody td:hover {background-color: #D5EBFF;}
+        table#formList tbody td.remove:hover {background-color: #FFB0B0;}
+        table#formList button { margin-top: -3px; }
+    </style>
+</head>
+    <body>
+        <div class="text-center" id="error" style="display: none;color:#c91d1d;">
+            <h6></h6>
+        </div>
+        <div class="btn-group">
+            <button type="button" id="addForm" class="btn btn-default" title="Add new form"><i class="glyphicon glyphicon-plus"></i> Add</button>
+            <button type="button" title="Check the code on github" class="btn btn-default"><a href="https://github.com/larryhe">Source code</a></button>
+        </div>
+        <table id="formList" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </body>
+</html>
