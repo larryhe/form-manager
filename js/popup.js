@@ -1,5 +1,4 @@
 var tab_url;
-// var chrome = {runtime: {}};
 function sendMessage(obj, callback) {
     chrome.tabs.query({ 'active': true, 'currentWindow': true }, function (tab) {
         chrome.tabs.sendMessage(tab[0].id, obj, callback);
@@ -10,40 +9,21 @@ function sendMessage(obj, callback) {
 //     updateFormList(tab_url);
 // });
 
-function getFormList(url){
-    var items = [];
-    var path = url;
-    var search = url.indexOf('?');
-    if(search > -1) {
-        path = path.substring(0, search);
-    }
-    for(var i=0; i<localStorage.length; i++){
-        var key = localStorage.key(i);
-        var item = localStorage.getItem(key);
-        if(key.indexOf('__form_manager__') > -1){
-            item = JSON.parse(item);
-            if(item.url && item.url.indexOf(path) > -1) {
-                items.push(item);
-            }
-        }
-    }
-    return items;
-}
-
-function renderFormList(url) {
+function renderFormList() {
     var table = $('#formList');
     var tbody = table.find('tbody');
     tbody.empty();
-    var formList = getFormList(url);
+    var formList = getFormList();
     tbody.append(formList.map(renderRow));
 }
 
 function renderRow(item) {
+    var form = item.form;
     return `<tr data-key="${item.key}">
         <td class="inlineEdit name">${item.name}</td>
         ${
-            item.form && item.form.map(function(field){
-                return `<td class="inlineEdit" field=${field.id}>${field.value}</td>`
+            Object.keys(form).map(function(key){
+                return `<td class="inlineEdit" field=${key}>${form[key]}</td>`
             })
         }
         <td class="action">
@@ -108,8 +88,7 @@ function saveValue($input) {
 }
 
 $(function () {
-    tab_url = "http://localhost:3000";
-    renderFormList(tab_url);
+    renderFormList();
     $("#addForm").click(function () {
         sendMessage({ "action": 'addForm' }, function readResponse(obj) {
             var error = $('#error');
@@ -126,9 +105,7 @@ $(function () {
             } else {
                 error.hide();
             }
-
             var key = getRandomStorageId();
-
             var entry = {
                 key,
                 url: tab_url,
@@ -144,13 +121,12 @@ $(function () {
     formList.on("click", '.action button', function (event) {
         var btn = $(this);
         var key = btn.parents("tr").data('key');
-        tab_url = "http://localhost:3000";
         if(btn.find('.glyphicon-trash').length > 0){
             localStorage.removeItem(key);
             removeRow(key);
         }else{
-            var setSettings = JSON.parse(localStorage.getItem(key));
-            sendMessage({ action: 'fill', setSettings: setSettings }, function(response) {
+            var entry = JSON.parse(localStorage.getItem(key));
+            sendMessage({ action: 'fill', form: entry.form }, function(response) {
                 window.close();
             });
         }
